@@ -1,2 +1,13 @@
 torch
 torchvision
+numpy
+scipy
+numpydoc
+setuptools
+sphinx
+sphinx_rtd_theme
+sphinx_gallery
+pillow
+sphinxcontrib-bibtex
+igraph
+pandas
