@@ -5,7 +5,30 @@ import numpy as np
 import copy
 
 def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_openness=None, seed=None, min_known_classes=2):
+        """
+        Method for obtaining configurations for OSR model evaluation using Outlier protocol. KKC come from base_dataset, UUC from outlier_dataset.
+
+        :type base_dataset: VisionDataset
+        :param base_dataset: Dataset describing KKC instances
         
+        :type outlier_dataset: VisionDataset
+        :param outlier_dataset: Dataset describing UUC instances
+        
+        :type repeats: int
+        :param repeats: Number of randol selections of classes for single openness (KKC/UUC class cardinality)
+        
+        :type n_openness: int
+        :param n_openness: Number of KKC/UUC class cardinality to generate
+        
+        :type seed: int
+        :param seed: Random state
+        
+        :type min_known_classes: int
+        :param min_known_classes: Minimum number of known classes
+        
+        :rtype: List
+        :returns: Lit of dataset configurations -- each containing sets of KKC and UUC -- and their Openness
+        """
         trng = torch.random.manual_seed(seed)
 
         # Wczytanie bazowego zbioru, określenie liczby instancji i klas
@@ -58,6 +81,40 @@ def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_opennes
 
 
 def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, seed=1410, n_folds=5):
+        """
+        Method for obtaining configurations for OSR model evaluation using Outlier protocol.
+
+        :type base_dataset: VisionDataset
+        :param base_dataset: Dataset describing KKC instances
+        
+        :type outlier_dataset: VisionDataset
+        :param outlier_dataset: Dataset describing UUC instances
+        
+        :type kkc_indexes: List
+        :param kkc_indexes: List of labels constituting Known Classes        
+        
+        :type uuc_indexes: List
+        :param uuc_indexes: List of labels constituting Unknown Classes
+        
+        :type root: string
+        :param root: Datasets folder
+        
+        :type tunning: boolean
+        :param tunning: Flag. If True will split 10% of data for tunning, otherwise will split 90% of data.
+                
+        :type fold: int
+        :param fold: Fold index
+        
+        :type n_folds: int
+        :param n_folds: Number of folds
+        
+        :type seed: int
+        :param seed: Random state
+        
+        :rtype: List
+        :returns: Train dataset, Test dataset
+        """
+        
         trng = torch.random.manual_seed(seed)
 
         # Teraz można określić prawdziwy zbiór
@@ -73,6 +130,7 @@ def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_index
         
         labels = np.unique(data.original_targets)
         
+        # Jaka porcja zbioru zostaje wydzielona do tunningu
         proportion = .1
         
         # First tuning, later validation
@@ -113,6 +171,7 @@ def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_index
                        onehot_num_classes=None
                        )
         
+        # Przypisanie etykiety dla obiektów UUC
         outliers.targets = [torch.zeros(len(kkc_indexes)+1, dtype=torch.float)
                                          .scatter_(0, torch.tensor(len(kkc_indexes)), value=1)
                                          for t in outliers.targets]

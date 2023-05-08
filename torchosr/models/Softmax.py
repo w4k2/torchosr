@@ -4,6 +4,18 @@ from torchmetrics import ConfusionMatrix, Accuracy
 from .base import OSRModule
 
 class Softmax(OSRModule):
+    """
+    Implementation of Thresholded Softmax method
+
+    :type lower_stack: nn.Sequential
+    :param lower_stack: Network architecture of lower_stack
+    
+    :type n_known: int
+    :param n_known: Number of known classes
+    
+    :type epsilon: float
+    :param epsilon: Threshold for prediction probability
+    """
     def __init__(self, lower_stack=None, n_known=3, epsilon=.5):
         super(Softmax, self).__init__(lower_stack=lower_stack,
                                       n_known=n_known)
