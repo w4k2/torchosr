@@ -7,7 +7,7 @@ from torchvision.datasets import VisionDataset
 
 class OutlierDataset(VisionDataset):
     """
-    OutlierDataset for combining instances from (known) testing and (unknown) outlier data.
+    OutlierDataset for combining instances from (known) training and (unknown) outlier data.
     
     :type root: string
     :param root: Data directory.

@@ -6,6 +6,25 @@ from scipy.stats import exponweib
 import numpy as np
 
 class Openmax(Softmax):
+    """
+    Implementation of Openmax method
+
+    :type lower_stack: nn.Sequential
+    :param lower_stack: Network architecture of lower_stack
+    
+    :type n_known: int
+    :param n_known: Number of known classes
+    
+    :type epsilon: float
+    :param epsilon: Threshold for prediction probability
+    
+    :type tail: int
+    :param tail: Tail size for estimating the parameters of Weibull distribution
+    
+    :type alpha: int
+    :param alpha: Alpha (number of most significant classes to revise)
+    """
+    
     def __init__(self, lower_stack=None, n_known=3, epsilon=.5, tail=20, alpha=2):
         super(Openmax, self).__init__(lower_stack=lower_stack,
                                       n_known=n_known,

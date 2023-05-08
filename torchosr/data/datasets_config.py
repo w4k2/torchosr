@@ -4,6 +4,27 @@ import copy
 import torch
 
 def configure_division(base_dataset, repeats, n_openness=None, seed=None, min_known_classes=2):
+        """
+        Method for obtaining configurations for OSR model evaluation using Holdout protocol (both KKC and UUC from single dataset).
+
+        :type base_dataset: VisionDataset
+        :param base_dataset: Base dataset
+        
+        :type repeats: int
+        :param repeats: Number of randol selections of classes for single openness (KKC/UUC class cardinality)
+        
+        :type n_openness: int
+        :param n_openness: Number of KKC/UUC class cardinality to generate
+        
+        :type seed: int
+        :param seed: Random state
+        
+        :type min_known_classes: int
+        :param min_known_classes: Minimum number of known classes
+        
+        :rtype: List
+        :returns: Lit of dataset configurations -- each containing sets of KKC and UUC -- and their Openness
+        """
         # Określenie generatora pseudolosowego
         trng = torch.random.manual_seed(seed)
         
@@ -23,7 +44,7 @@ def configure_division(base_dataset, repeats, n_openness=None, seed=None, min_kn
 
         # Jeżeli mamy n_openness losujemy n konfiguracji
         if n_openness is not None:
-                # Faworyzujemy te podzbiory, w których sumaryczna liczba klas jest duża -- TBD -- (żeby wykorzystać tyle ze zbioru ile się da?)
+                # Faworyzujemy te podzbiory, w których sumaryczna liczba klas jest duża
                 p = openness_n_classes.sum(1)
                 p = p / p.sum()
                 rand_indexes = p.multinomial(num_samples=n_openness, replacement=False, generator=trng)
@@ -53,6 +74,25 @@ def configure_division(base_dataset, repeats, n_openness=None, seed=None, min_kn
 
 
 def configure_oneclass_division(base_dataset, repeats, n_openness=None, seed=None):
+        """
+        Method for obtaining configurations for OSR model evaluation using Holdout protocol (both KKC and UUC from single dataset) for One-class classification. Set of KKC always contains a single class.
+
+        :type base_dataset: VisionDataset
+        :param base_dataset: Base dataset
+        
+        :type repeats: int
+        :param repeats: Number of randol selections of classes for single openness (KKC/UUC class cardinality)
+        
+        :type n_openness: int
+        :param n_openness: Number of KKC/UUC class cardinality to generate
+        
+        :type seed: int
+        :param seed: Random state
+        
+        :rtype: List
+        :returns: List of dataset configurations -- each containing sets of KKC and UUC -- and their Openness
+        """
+        
         # Określenie generatora pseudolosowego
         trng = torch.random.manual_seed(seed)
         
@@ -68,11 +108,11 @@ def configure_oneclass_division(base_dataset, repeats, n_openness=None, seed=Non
                 openness.append(1 - np.sqrt((2)/(2+j)))
                 
         openness = torch.tensor(openness)
-        openness_n_classes = torch.tensor(openness_n_classes)       
+        openness_n_classes = torch.tensor(openness_n_classes)
         
         # Jeżeli mamy n_openness losujemy n konfiguracji
         if n_openness is not None:
-                # Faworyzujemy te podzbiory, w których sumaryczna liczba klas jest duża -- TBD -- (żeby wykorzystać tyle ze zbioru ile się da?)
+                # Faworyzujemy te podzbiory, w których sumaryczna liczba klas jest duża
                 p = openness_n_classes.sum(1)
                 p = p / p.sum()
                 rand_indexes = p.multinomial(num_samples=n_openness, replacement=False, generator=trng)
@@ -102,6 +142,37 @@ def configure_oneclass_division(base_dataset, repeats, n_openness=None, seed=Non
 
 
 def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, seed=1410, n_folds=5):
+        """
+        Method for obtaining Cross-validation folds using Holdout protocol (both KKC and UUC from single dataset). Method
+
+        :type base_dataset: VisionDataset
+        :param base_dataset: Base dataset
+        
+        :type kkc_indexes: List
+        :param kkc_indexes: List of labels constituting Known Classes        
+        
+        :type uuc_indexes: List
+        :param uuc_indexes: List of labels constituting Unknown Classes
+        
+        :type root: string
+        :param root: Datasets folder
+        
+        :type tunning: boolean
+        :param tunning: Flag. If True will split 10% of data for tunning, otherwise will split 90% of data.
+                
+        :type fold: int
+        :param fold: Fold index
+        
+        :type n_folds: int
+        :param n_folds: Number of folds
+        
+        :type seed: int
+        :param seed: Random state
+        
+        :rtype: List
+        :returns: Train dataset, Test dataset
+        """
+        
         trng = torch.random.manual_seed(seed)
         
         classes = np.concatenate((kkc_indexes, uuc_indexes))
@@ -119,6 +190,7 @@ def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, 
         
         labels = data.original_targets.unique()
         
+        # Jaka porcja zbioru zostaje przeznaczona na zbiór tunningowy
         proportion = .1
         
         # First tuning, later validation
@@ -148,7 +220,6 @@ def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, 
         # SUPER WAŻNE!
         uuc_idx = torch.argwhere(data.targets == len(kkc_indexes))
         train_indexes = np.array([i for i in train_indexes if i not in uuc_idx])
-
 
         data_test = copy.deepcopy(data)
         data_train = copy.deepcopy(data)
