@@ -33,10 +33,15 @@ def test_MNIST_Omni_config():
     base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
     out = to.data.Omniglot_base(root=root, download=True, transform=t_omni)
 
-    config = to.data.configure_division_o(base, out, n_openness, repeats, seed)
-
+    config = to.data.configure_division_outlier(base, out, n_openness, repeats, seed)
+    
     for config_i, (kkc, uuc) in enumerate(config[0]):
-            train, test = to.data.get_train_test_o(base, out, kkc, uuc, root=root, tunning=True, fold=1, seed=seed)
+            train, test = to.data.get_train_test_outlier(base, out, kkc, uuc, 
+                                                         root=root, 
+                                                         tunning=True, 
+                                                         fold=1, 
+                                                         seed=seed)
+            
             train_data = [train.__getitem__(i)[0] for i in range(len(train))]
             test_data = [test.__getitem__(i)[0] for i in range(len(test))]
             
@@ -74,7 +79,6 @@ def test_trainset():
                 #Czy na pewno w zbiorze treningowym nie znajdzie się UUC
                 if (trd[-1]!=0):
                         exit()
-
 
 def test_SVHN_config():
     base = to.data.SVHN_base(root=root, download=True, transform=t_svhn)
