@@ -1,5 +1,6 @@
 torch
 torchvision
+torchmetrics
 numpy
 scipy
 numpydoc
