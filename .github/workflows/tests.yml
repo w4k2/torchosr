@@ -21,6 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov
       - name: Test with pytest
         run: |
           py.test --cov-report term-missing:skip-covered --cov=torchosr torchosr
