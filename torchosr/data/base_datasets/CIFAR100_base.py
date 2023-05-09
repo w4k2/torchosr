@@ -1,4 +1,4 @@
-from ..data.CIFAR10_base import CIFAR10_base
+from .CIFAR10_base import CIFAR10_base
 
 class CIFAR100_base(CIFAR10_base):
     """

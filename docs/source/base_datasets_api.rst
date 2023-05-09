@@ -5,10 +5,13 @@ Data module
 .. currentmodule:: torchosr.data
 
 .. autosummary::
+  
+  MNIST_base
+  Omniglot_base
+  CIFAR10_base
+  CIFAR100_base
+  SVHN_base
 
-  OutlierDataset
-  DataWrapper
-
-.. automodule:: torchosr.data
+.. automodule:: torchosr.data.base_datasets
   :members:
   :show-inheritance:
