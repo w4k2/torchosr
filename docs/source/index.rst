@@ -10,6 +10,7 @@ Welcome to torchosr documentation!
    data_api
    base_datasets_api
    models_api
+   architectures_api
    utils_api
 
 
