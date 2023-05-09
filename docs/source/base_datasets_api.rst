@@ -2,7 +2,7 @@
 Base datasets module
 ###########
 
-.. currentmodule:: torchosr.data
+.. currentmodule:: torchosr.data.base_datasets
 
 .. autosummary::
   
