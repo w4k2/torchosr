@@ -30,8 +30,8 @@ seed = 43
 
 
 def test_MNIST_Omni_config():
-    base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
-    out = to.data.Omniglot_base(root=root, download=True, transform=t_omni)
+    base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
+    out = to.data.base_datasets.Omniglot_base(root=root, download=True, transform=t_omni)
 
     config = to.data.configure_division_outlier(base, out, n_openness, repeats, seed)
     
@@ -52,7 +52,7 @@ def test_MNIST_Omni_config():
 
 
 def test_MNIST_config():
-    base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
+    base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
     config = to.data.configure_division(base, n_openness, repeats, seed)
 
     for config_i, (kkc, uuc) in enumerate(config[0]):
@@ -67,7 +67,7 @@ def test_MNIST_config():
                                     exit()
 
 def test_trainset():
-    base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
+    base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
     config = to.data.configure_division(base, n_openness, repeats, seed)
 
     for config_i, (kkc, uuc) in enumerate(config[0]):
@@ -81,7 +81,7 @@ def test_trainset():
                         exit()
 
 def test_SVHN_config():
-    base = to.data.SVHN_base(root=root, download=True, transform=t_svhn)
+    base = to.data.base_datasets.SVHN_base(root=root, download=True, transform=t_svhn)
     config = to.data.configure_division(base, n_openness, repeats, seed)
 
     for config_i, (kkc, uuc) in enumerate(config[0]):
@@ -96,7 +96,7 @@ def test_SVHN_config():
                                     exit()
 
 def test_CIFAR10_config():
-    base = to.data.CIFAR10_base(root=root, download=True, transform=t_cifar)
+    base = to.data.base_datasets.CIFAR10_base(root=root, download=True, transform=t_cifar)
     config = to.data.configure_division(base, n_openness, repeats, seed)
 
     for config_i, (kkc, uuc) in enumerate(config[0]):
@@ -111,7 +111,7 @@ def test_CIFAR10_config():
                                     exit()
 
 def test_CIFAR100_config():
-    base = to.data.CIFAR100_base(root=root, download=True, transform=t_cifar)
+    base = to.data.base_datasets.CIFAR100_base(root=root, download=True, transform=t_cifar)
     config = to.data.configure_division(base, n_openness, repeats, seed)
 
     for config_i, (kkc, uuc) in enumerate(config[0]):
@@ -130,7 +130,7 @@ def test_config_replicability():
     r_openness = 10
     r_repeats = 10
    
-    base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
+    base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
     
     config1 = to.data.configure_division(base, r_openness, r_repeats, r_seed)
     config2 = to.data.configure_division(base, r_openness, r_repeats, r_seed)
@@ -149,7 +149,7 @@ def test_train_test_replicability():
     r_kkc = [0,1,2]
     r_uuc = [3,4,5,6,7]
    
-    base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
+    base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
     
     train1, test1 = to.data.get_train_test(base, r_kkc, r_uuc, root=root, tunning=True, fold=1, seed=r_seed)
     train2, test2 = to.data.get_train_test(base, r_kkc, r_uuc, root=root, tunning=True, fold=1, seed=r_seed)
@@ -169,7 +169,7 @@ def test_train_test_replicability():
             assert(torch.equal(t1, t2))
 
 def test_tune_validation():
-        base = to.data.MNIST_base(root=root, download=True, transform=t_mnist)
+        base = to.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
         kkc = [1,2]
         uuc = [0,3]
 

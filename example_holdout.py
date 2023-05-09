@@ -28,7 +28,7 @@ n_openness = 5      # openness values
 root='data'
 
 # Load dataset
-base = osr.data.MNIST_base(root=root, download=True, transform=t_mnist)
+base = osr.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
 
 config, openness = configure_division(base, n_openness, repeats, seed=4334)
 

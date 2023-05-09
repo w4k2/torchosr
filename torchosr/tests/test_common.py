@@ -3,7 +3,8 @@
 import numpy as np
 import torchosr as osr
 import torch
-from torchosr.data import DataWrapper, SVHN_base
+from torchosr.data.base_datasets import SVHN_base
+from torchosr.data import DataWrapper
 from torchosr.utils.base import grayscale_transform
 from torchvision import transforms
 from torch.utils.data import DataLoader

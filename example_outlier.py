@@ -28,8 +28,8 @@ n_openness = 5      # openness values
 root='data'
 
 # Load dataset
-base = osr.data.MNIST_base(root=root, download=True, transform=t_mnist)
-out = osr.data.Omniglot_base(root=root, download=True, transform=t_omni)
+base = osr.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
+out = osr.data.base_datasets.Omniglot_base(root=root, download=True, transform=t_omni)
 
 config, openness = configure_division_outlier(base, out, n_openness, repeats, seed=1233)
 
