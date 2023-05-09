@@ -22,7 +22,6 @@ class Softmax(OSRModule):
         self.randy = None
         self.epsilon = epsilon
         
-        # wszelkie modele openmaksowe wewnętrznie mają klasyczną strukturę, a więc optymalizują się do liczby znanych klas
         self.upper_stack = nn.Sequential(
             nn.Linear(64, self.n_known)
         )
@@ -61,7 +60,6 @@ class Softmax(OSRModule):
                 inner_target = y_flat[known_mask]
                 
                 # Establish outer pred
-                # Here is softmax
                 outer_pred = (nn.Softmax(dim=1)(logits).max(1).values > self.epsilon).int()
                 outer_target = (y_flat != self.n_known).int()
                                 

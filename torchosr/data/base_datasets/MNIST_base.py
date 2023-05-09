@@ -125,8 +125,6 @@ class MNIST_base(VisionDataset):
         )
 
     def download(self) -> None:
-        """Download the MNIST data if it doesn't exist already."""
-
         if self._check_exists():
             return
 
@@ -163,9 +161,9 @@ SN3_PASCALVINCENT_TYPEMAP = {
 
 
 def read_sn3_pascalvincent_tensor(path: str, strict: bool = True) -> torch.Tensor:
-    """Read a SN3 file in "Pascal Vincent" format (Lush file 'libidx/idx-io.lsh').
-    Argument may be a filename, compressed filename, or file object.
-    """
+    #Read a SN3 file in "Pascal Vincent" format (Lush file 'libidx/idx-io.lsh').
+    # Argument may be a filename, compressed filename, or file object.
+    
     # read
     with open(path, "rb") as f:
         data = f.read()

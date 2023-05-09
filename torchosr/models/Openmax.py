@@ -43,7 +43,7 @@ class Openmax(Softmax):
         for batch, (X, y) in enumerate(dataloader):
             # Compute prediction and loss
             pred = self(X)
-            loss = loss_fn(pred, y[:,:-1]) # funkcja straty nie bierze udziału, więc ją pożegnajmy
+            loss = loss_fn(pred, y[:,:-1])
             
             # Backpropagation
             optimizer.zero_grad()
@@ -71,12 +71,7 @@ class Openmax(Softmax):
         activations = activations[correct]
         y_flat = y_flat[correct]        
         
-        # Establish mean activation vectors for correctly classified known classes
-        # As discussed previously (Alg. 1), we consider the penultimate layer (fully connected layer 8 , i.e., FC8) for computation of mean activation vectors (MAV). The MAV vector is computed for each class by consider- ing the training examples that deep networks training clas- sified correctly for the respective class. MAV is computed for each crop/channel separately.
-        
-        # TODO: wprowadź parametr alpha i proguj klasy po liczności
-        # TODO: dopuszczalna alpha -1, gdzie wpuszcza wszystko o co najmniej tail poprawnie sklasyfikowanych obiektów
-        
+        # Establish mean activation vectors for correctly classified known classes        
         n_known_classes = activations.shape[1]
         self.weibs = {}
         
@@ -85,15 +80,14 @@ class Openmax(Softmax):
             if correct_subset.shape[0] > self.tail:
                 mav = correct_subset.mean(0).view(1, -1)
 
-                # Distance between each correctly classified training example and MAV for particu- lar class is computed to obtain class specific distance dis- tribution. For these experiments we use a distance that is a weighted combination of normalized Euclidean and cosine distances.
-                # Zastosujmy euklidesowy, skoro sami autorzy stwierdzili, że nie ma różnicy.            
-                # Policz tu dystanse pomiędzy correct_subset i mav.            
+                # Distance between each correctly classified training example and MAV for particular class is computed to obtain class specific distance distribution. 
+                # Calculate distance between correct_subset and mav.            
                 dist = torch.cdist(mav, correct_subset)
                 
-                # Zostaw tylko ogon w dist
+                # Leave tail
                 dist = dist.sort()[0][:,-self.tail:]
                 
-                # Dopasuj rozkład
+                # Fit distribution
                 proba = dist[0].detach().numpy()
                 try:
                     self.weibs.update({label: exponweib.fit(proba, loc=0, scale=.2)})
@@ -110,13 +104,14 @@ class Openmax(Softmax):
         outer_targets = []
         overall_targets = []
         
-        # Define metric for open set detection
+        # Define metrics for open set detection
         try:
             inner_metric = Accuracy(task="multiclass", num_classes=self.n_known, average='weighted')
             overall_metric = Accuracy(task="multiclass", num_classes=self.n_known+1, average='weighted')
         except:
             inner_metric = None
             overall_metric = None
+            
         outer_metric = Accuracy(task='binary', average='weighted')
 
         with torch.no_grad():
@@ -159,14 +154,12 @@ class Openmax(Softmax):
                 inner_target = y_flat[known_mask]           
                              
                 # Establish outer pred
-                # Here is softmax
-                # Czy wsparcie jest dla klasy znanej
-                pred_known = (nn.Softmax(dim=1)(logits).argmax(1) != self.n_known).int() # 1=KKC
+                # Check if prediction (max support) is for KKC
+                pred_known = (nn.Softmax(dim=1)(logits).argmax(1) != self.n_known).int() # 1 = KKC
 
-                # Czy wsparcie jest dostateczne do zachowania decyzji
-                pred_sure = (nn.Softmax(dim=1)(logits).max(1).values > self.epsilon).int() # jeżeli wsparcie jest większe to KKC
+                # Check if support is sufficient to keep the decision
+                pred_sure = (nn.Softmax(dim=1)(logits).max(1).values > self.epsilon).int() # 1 = KKC
 
-                # pred_known = 1-pred_known
                 outer_pred = pred_known * pred_sure
                 outer_target = (y_flat != self.n_known).int()
                 
@@ -212,7 +205,6 @@ class Openmax(Softmax):
             c_hp = ConfusionMatrix(task="multiclass", num_classes=self.n_known+1)(inner_preds_hp, inner_targets)
             c_overall = ConfusionMatrix(task="multiclass", num_classes=self.n_known+1)(inner_preds_overall, overall_targets)
             return inner_score, outer_score, inner_score_hp, inner_score_overall, c_inner, c_outer, c_hp, c_overall
-            
         
         if self.verbose:
             print('Inner metric : %.3f' % inner_score)
