@@ -13,4 +13,4 @@ Welcome to torchosr documentation!
    utils_api
 
 
-The ``torchosr`` module is a set of tools necessary for ....
+The ``torchosr`` module is a set of tools for Open Set Recognition in Python, compatible with PyTorch library.
