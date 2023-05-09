@@ -82,7 +82,7 @@ def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_opennes
 
 def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, seed=1410, n_folds=5):
         """
-        Method for obtaining configurations for OSR model evaluation using Outlier protocol.
+        Method for obtaining Cross-validation folds using Outlier protocol (KKC obtained from base_dataset and UUC from outlier_dataset).
 
         :type base_dataset: VisionDataset
         :param base_dataset: Dataset describing KKC instances

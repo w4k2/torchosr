@@ -73,7 +73,7 @@ def configure_division(base_dataset, repeats, n_openness=None, seed=None, min_kn
 
 def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, seed=1410, n_folds=5):
         """
-        Method for obtaining Cross-validation folds using Holdout protocol (both KKC and UUC from single dataset). Method
+        Method for obtaining Cross-validation folds using Holdout protocol (both KKC and UUC from single dataset).
 
         :type base_dataset: VisionDataset
         :param base_dataset: Base dataset
