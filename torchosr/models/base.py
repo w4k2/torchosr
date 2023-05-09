@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from .architectures import fc_lower_stack
+from ..architectures.architectures import fc_lower_stack
 
 class OSRModule(nn.Module):
     def __init__(self, n_known, lower_stack=None, verbose=False):

@@ -3,7 +3,7 @@ import torchosr as osr
 import torch
 from tqdm import tqdm
 from torchosr.data.datasets_config import configure_division, get_train_test
-from torchosr.models.architectures import fc_lower_stack
+from torchosr.architectures.architectures import fc_lower_stack
 from torchvision import transforms
 from torchosr.utils.base import inverse_transform
 

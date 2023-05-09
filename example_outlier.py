@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import torchosr as osr
 import torch
 from tqdm import tqdm
-from torchosr.models.architectures import fc_lower_stack
+from torchosr.architectures.architectures import fc_lower_stack
 from torchvision import transforms
 from torchosr.utils.base import inverse_transform
 
