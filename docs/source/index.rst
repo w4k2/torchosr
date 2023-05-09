@@ -8,6 +8,7 @@ Welcome to torchosr documentation!
    :caption: Documentation
 
    data_api
+   base_datasets_api
    models_api
    utils_api
 
