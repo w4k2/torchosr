@@ -2,7 +2,7 @@
 Architectures module
 #############
 
-.. currentmodule:: torchosr.models
+.. currentmodule:: torchosr.architectures
 
 .. autosummary::
   fc_lower_stack
