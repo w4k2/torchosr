@@ -42,7 +42,7 @@ class DataWrapper(VisionDataset):
         root: str,
         base_dataset,
         indexes, # For k-fold
-        get_classes, #Known + Unknown
+        get_classes, # Known + Unknown
         known_classes,
         return_only_known, # For training
         onehot = False,

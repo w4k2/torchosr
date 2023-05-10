@@ -31,11 +31,11 @@ def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_opennes
         """
         trng = torch.random.manual_seed(seed)
 
-        # Wczytanie bazowego zbioru, określenie liczby instancji i klas
+        # Get number of classes from base and outlier datasets
         n_classes_base = (base_dataset._n_classes())
         n_classes_out = (outlier_dataset._n_classes())
 
-        # Tablice na liczności klas znanych/nieznanych i openness w zależności od nich
+        # Tables for quantities of KKC and UUC and Opennes dependent of quantities
         openness_n_classes = []
         openness = []
         
@@ -48,25 +48,23 @@ def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_opennes
         openness_n_classes = torch.tensor(openness_n_classes)
         
         if n_openness is not None:
-                # Losujemy n_openness konfiguracji
-                # Faworyzujemy te podzbiory, w których sumaryczna liczba klas jest duża
+                # Randomly select n_openness configurations
+                # Higher selection probability to configurations with larger number of classes
                 p = openness_n_classes.sum(1)
                 p = p / p.sum()
                 rand_indexes = p.multinomial(num_samples=n_openness, replacement=False, generator=trng)
                 
-                # Podranie wylosowanych liczności i openness
+                # Select chosen openness and configurations
                 op_choice = openness[rand_indexes]
                 op_n_classes_choice = openness_n_classes[rand_indexes]
         else:
-                # W innym wypadku pobieramy wszystkie
+                # In n_openness is None select all configurations
                 op_choice = openness
                 op_n_classes_choice = openness_n_classes
 
-        #Teraz dla wylosowanych liczności będziemy losować klasy
+        # Now randomly assign classes
         repeats_config =[]
-
         for kkc_n, uuc_n in op_n_classes_choice:    
-                #Dla liczby powtórzeń losujemy indeksy kkc i uuc
                 for r in range(repeats):
                         all_kkc = torch.arange(n_classes_base, dtype=float)
                         kkc = all_kkc.multinomial(num_samples=kkc_n, replacement=False, generator=trng)
@@ -74,7 +72,6 @@ def configure_division_outlier(base_dataset, outlier_dataset, repeats, n_opennes
                         all_uuc = torch.arange(n_classes_out, dtype=float)
                         uuc = all_uuc.multinomial(num_samples=uuc_n, replacement=False, generator=trng)
                         
-                        #Zapisujemy konfiguracje
                         repeats_config.append((kkc, uuc))
         
         return repeats_config, op_choice
@@ -117,7 +114,7 @@ def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_index
         
         trng = torch.random.manual_seed(seed)
 
-        # Teraz można określić prawdziwy zbiór
+        # Create dataset containing only KKC
         data = DataWrapper(root=root,
                        base_dataset=base_dataset,
                        indexes='all',
@@ -130,7 +127,7 @@ def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_index
         
         labels = np.unique(data.original_targets)
         
-        # Jaka porcja zbioru zostaje wydzielona do tunningu
+        # Portion of data for tunning
         proportion = .1
         
         # First tuning, later validation
@@ -171,7 +168,7 @@ def get_train_test_outlier(base_dataset, outlier_dataset, kkc_indexes, uuc_index
                        onehot_num_classes=None
                        )
         
-        # Przypisanie etykiety dla obiektów UUC
+        # Assign label to UUC objects
         outliers.targets = [torch.zeros(len(kkc_indexes)+1, dtype=torch.float)
                                          .scatter_(0, torch.tensor(len(kkc_indexes)), value=1)
                                          for t in outliers.targets]

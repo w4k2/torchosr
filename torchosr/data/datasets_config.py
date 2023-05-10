@@ -107,7 +107,7 @@ def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, 
         
         classes = np.concatenate((kkc_indexes, uuc_indexes))
 
-        # Teraz można określić prawdziwy zbiór
+        # Generate dataset
         data = DataWrapper(root=root,
                        base_dataset=base_dataset,
                        indexes='all',
@@ -120,7 +120,7 @@ def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, 
         
         labels = data.original_targets.unique()
         
-        # Jaka porcja zbioru zostaje przeznaczona na zbiór tunningowy
+        # Define portion of data that will be considered tunning set
         proportion = .1
         
         # First tuning, later validation
@@ -147,7 +147,7 @@ def get_train_test(base_dataset, kkc_indexes, uuc_indexes, root, tunning, fold, 
         train_indexes = torch.where(train_mask)[0]
         test_indexes = torch.where(test_mask)[0]
         
-        # SUPER WAŻNE!
+        # REMOVE UUC FROM TRAINING
         uuc_idx = torch.argwhere(data.targets == len(kkc_indexes))
         train_indexes = np.array([i for i in train_indexes if i not in uuc_idx])
 
