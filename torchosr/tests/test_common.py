@@ -82,7 +82,7 @@ def test_Softmax():
     test_data_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
     
     # Initialize model
-    model_openmax = osr.models.Softmax(n_known=len(known), epsilon=epsilon)
+    model_openmax = osr.models.TSoftmax(n_known=len(known), epsilon=epsilon)
     
     # Initialize loss function
     loss_fn = torch.nn.CrossEntropyLoss()

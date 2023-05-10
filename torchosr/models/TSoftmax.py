@@ -3,7 +3,7 @@ from torch import nn
 from torchmetrics import ConfusionMatrix, Accuracy
 from .base import OSRModule
 
-class Softmax(OSRModule):
+class TSoftmax(OSRModule):
     """
     Implementation of Thresholded Softmax method
 
@@ -17,7 +17,7 @@ class Softmax(OSRModule):
     :param epsilon: Threshold for prediction probability
     """
     def __init__(self, lower_stack=None, n_known=3, epsilon=.5):
-        super(Softmax, self).__init__(lower_stack=lower_stack,
+        super(TSoftmax, self).__init__(lower_stack=lower_stack,
                                       n_known=n_known)
         self.randy = None
         self.epsilon = epsilon

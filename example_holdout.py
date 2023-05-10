@@ -1,20 +1,16 @@
 from torch.utils.data import DataLoader
-import torchosr as osr
 import torch
 from tqdm import tqdm
+from torchosr.data.base_datasets import MNIST_base
 from torchosr.data.datasets_config import configure_division, get_train_test
-from torchosr.architectures.architectures import fc_lower_stack
+from torchosr.architectures import fc_lower_stack
+from torchosr.models import Openmax, TSoftmax
 from torchvision import transforms
-from torchosr.utils.base import inverse_transform
+from torchosr.utils.base import get_openmax_epsilon, get_softmax_epsilon, inverse_transform
 
 t_mnist = transforms.Compose([
         transforms.Resize(28),
         transforms.ToTensor()])
-
-t_omni = transforms.Compose([
-            transforms.Resize(28),
-            transforms.ToTensor(),
-            inverse_transform()])
 
 # Modelling parameters
 learning_rate = 1e-3
@@ -28,7 +24,7 @@ n_openness = 5      # openness values
 root='data'
 
 # Load dataset
-base = osr.data.base_datasets.MNIST_base(root=root, download=True, transform=t_mnist)
+base = MNIST_base(root=root, download=True, transform=t_mnist)
 
 config, openness = configure_division(base, n_openness, repeats, seed=4334)
 
@@ -57,8 +53,12 @@ for config_idx, (kkc, uuc) in enumerate(config):
             test_data_loader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
             
             methods = [
-            osr.models.Softmax(lower_stack=fc_lower_stack(depth=1, img_size_x=28, n_out_channels=64), n_known=len(kkc), epsilon=0.7),
-            osr.models.Openmax(lower_stack=fc_lower_stack(depth=1, img_size_x=28, n_out_channels=64), n_known=len(kkc), epsilon=0.5),
+            TSoftmax(lower_stack=fc_lower_stack(depth=1, img_size_x=28, n_out_channels=64),
+                                n_known=len(kkc),
+                                epsilon=get_softmax_epsilon(len(kkc))),
+            Openmax(lower_stack=fc_lower_stack(depth=1, img_size_x=28, n_out_channels=64),
+                               n_known=len(kkc),
+                               epsilon=get_openmax_epsilon(len(kkc))),
             ]
             
             for model_id, model in enumerate(methods):                         

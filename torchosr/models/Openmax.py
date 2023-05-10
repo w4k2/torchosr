@@ -1,11 +1,11 @@
 import torch
 from torch import nn
 from torchmetrics import Accuracy, ConfusionMatrix
-from .Softmax import Softmax
+from .TSoftmax import TSoftmax
 from scipy.stats import exponweib
 import numpy as np
 
-class Openmax(Softmax):
+class Openmax(TSoftmax):
     """
     Implementation of Openmax method
 

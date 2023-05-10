@@ -1,9 +1,9 @@
 from .Openmax import (Openmax)
-from .Softmax import (Softmax)
+from .TSoftmax import (TSoftmax)
 from .base import (OSRModule)
 
 __all__ = [
     "OSRModule",
     "Openmax",
-    "Softmax"
+    "TSoftmax"
 ]
