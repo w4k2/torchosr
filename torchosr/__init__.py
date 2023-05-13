@@ -5,5 +5,6 @@ __all__ = [
     "models",
     "data",
     "utils",
+    "architectures"
     "__version__",
 ]
