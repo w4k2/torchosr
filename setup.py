@@ -25,7 +25,7 @@ MAINTAINER_EMAIL = "joanna.komorniczak@pwr.edu.pl"
 URL = "https://github.com/w4k2/osr"
 LICENSE = "GPL-3.0"
 DOWNLOAD_URL = "https://github.com/w4k2/osr"
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 INSTALL_REQUIRES = ["numpy", "scipy", "torch", "torchvision", "torchmetrics"]
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
