@@ -161,3 +161,6 @@ cython_debug/
 
 /data
 .DS_Store
+.ipynb
+example.eps
+example.png
