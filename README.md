@@ -20,7 +20,7 @@ pip install -U torchosr
 In case of necessity to expand it with functions that it does not yet include, it is also possible to install the module directly from the source code. If any modifications are introduced, they propagate to the module currently available to the environment.
 
 ```shell
-git clone https://github.com/w4k2/trochosr.git
+git clone https://github.com/w4k2/torchosr.git
 cd torchosr
 make install
 ```
