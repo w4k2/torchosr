@@ -163,4 +163,3 @@ cython_debug/
 .DS_Store
 *.ipynb
 example.eps
-example.png
