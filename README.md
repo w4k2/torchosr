@@ -157,7 +157,7 @@ import matplotlib.pyplot as plt
 
 # Present results
 fig, ax = plt.subplots(1,1,figsize=(10,4))
-ax.plot(results.T, label=['Inner', 'Outer', 'Halpfoint', 'Overall'])
+ax.plot(results.T, label=['Inner', 'Outer', 'Halfpoint', 'Overall'])
 ax.legend()
 ax.grid(ls=':')
 ax.set_xlabel('epochs')
