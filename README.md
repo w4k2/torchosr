@@ -6,8 +6,18 @@ Package documentation can be accessed through [readthedocs](https://torchosr.rea
 
 ## Citation policy
 
-todo
+If you use `torchosr` in a scientific publication, we would appreciate citation to the following article:
 
+```
+@misc{komorniczak2023torchosr,
+      title={torchosr -- a PyTorch extension package for Open Set Recognition models evaluation in Python}, 
+      author={Joanna Komorniczak and Pawel Ksieniewicz},
+      year={2023},
+      eprint={2305.09646},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
 ## Quick start guide
 
 ### Installation
