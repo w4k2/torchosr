@@ -124,6 +124,4 @@ class CIFAR10_base(VisionDataset):
             return
         download_and_extract_archive(self.url, self.root, filename=self.filename, md5=self.tgz_md5)
 
-    def extra_repr(self) -> str:
-        split = "Train" if self.train is True else "Test"
-        return f"Split: {split}"
+    

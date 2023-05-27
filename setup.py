@@ -26,7 +26,7 @@ URL = "https://github.com/w4k2/torchosr"
 LICENSE = "GPL-3.0"
 DOWNLOAD_URL = "https://github.com/w4k2/torchosr"
 VERSION = "0.1.0"
-INSTALL_REQUIRES = ["numpy", "scipy", "torch", "torchvision", "torchmetrics"]
+INSTALL_REQUIRES = ["numpy", "scipy", "torch", "torchvision", "torchmetrics", "pandas"]
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",

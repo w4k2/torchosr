@@ -3,11 +3,13 @@ from .Omniglot_base import Omniglot_base
 from .CIFAR10_base import CIFAR10_base
 from .CIFAR100_base import CIFAR100_base
 from .SVHN_base import SVHN_base
+from .FOOD101_base import FOOD101_base
 
 __all__ = [
     "MNIST_base",
     "Omniglot_base",
     "CIFAR10_base",
     "CIFAR100_base",
-    "SVHN_base"
+    "SVHN_base",
+    "FOOD101_base"
 ]
