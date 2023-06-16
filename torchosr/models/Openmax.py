@@ -211,3 +211,42 @@ class Openmax(TSoftmax):
             print('Outer metric : %.3f' % outer_score)
             
         return inner_score, outer_score, inner_score_hp, inner_score_overall
+
+
+    def predict(self, X): 
+        with torch.no_grad():
+            logits = self(X)
+            slogit = logits.sum(1)
+            
+            # Rank activations for alpha trimming
+            a_trimmer = 1 - torch.nn.functional.one_hot(torch.topk(logits, self.alpha, dim=1)[1],
+                                                        logits.shape[1]).sum(1)
+                            
+            # Calculate weights
+            w = np.ones(logits.shape).astype(float)
+            for i in self.weibs:
+                rv = self.weibs[i]
+                w[:,i] -= exponweib.cdf(logits[:,i], *rv)
+            
+            w = torch.Tensor(w)
+            try:
+                w[a_trimmer] = 1
+            except:
+                print('[a_trimmer] Skipped', w, a_trimmer)
+            
+            # Establish weighted logits and unknown activation
+            v_logits = w*logits
+            plogit = v_logits.sum(1)
+            unknown_activation = torch.sub(slogit, plogit)
+
+            # Calculate corrected activation
+            logits = torch.cat((v_logits, unknown_activation[:,None]), 1)          
+
+            pred_known = (nn.Softmax(dim=1)(logits).argmax(1) != self.n_known).int() # 1 = KKC
+            pred_sure = (nn.Softmax(dim=1)(logits).max(1).values > self.epsilon).int() # 1 = KKC
+            outer_pred = pred_known * pred_sure
+            
+            inner_pred_overall = nn.Softmax(dim=1)(logits).argmax(1)
+            inner_pred_overall[outer_pred==0]=self.n_known
+            
+            return inner_pred_overall

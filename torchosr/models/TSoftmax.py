@@ -110,3 +110,16 @@ class TSoftmax(OSRModule):
             print('Outer metric : %.3f' % outer_score)
             
         return inner_score, outer_score, inner_score_hp, inner_score_overall
+
+
+    def predict(self, X):
+        with torch.no_grad():
+            logits = self(X)
+            
+            overall_pred = nn.Softmax(dim=1)(logits).argmax(1)
+            outer_pred = (nn.Softmax(dim=1)(logits).max(1).values > self.epsilon).int()
+            overall_pred[outer_pred==0]=self.n_known
+            
+            return overall_pred
+                
+        
