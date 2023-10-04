@@ -22,12 +22,14 @@ Minimal processing example
 The `torchosr` package can be imported in the standard Python manner.
 
 .. code-block:: python
+
   # Importing torchosr
   import torchosr
 
 The code below allows loading the `MNIST_base` dataset.
 
 .. code-block:: python
+
   # Import transforms for pre-processing
   from torchvision import transforms
 
@@ -35,6 +37,7 @@ The code below allows loading the `MNIST_base` dataset.
   data = torchosr.data.base_datasets.MNIST_base(root = 'data', download = True, transform = transforms.Compose([transforms.Resize(28),transforms.ToTensor()]))
 
 .. code-block:: shell
+
   > Dataset MNIST_base
   > Number of datapoints: 70000
   > Root location: data
@@ -42,6 +45,7 @@ The code below allows loading the `MNIST_base` dataset.
 Then, for the loaded file, the `configure_division` function will generate configurations for derived OSR datasets. The sample code generates nine configurations - three class assignments for three `Openness` each.
 
 .. code-block:: python
+
   # Generate OSR problem configurations
   config, openness = torchosr.data.configure_division(data, n_openness = 3, repeats = 3, seed = 1234)
   # Print configurations
@@ -53,6 +57,7 @@ Then, for the loaded file, the `configure_division` function will generate confi
           uuc.detach().numpy()))
 
 .. code-block:: shell
+
   > C0 - Op: 0.047 KKC:[0 1 7 9 3] 	 UUC:[6]
   > C1 - Op: 0.047 KKC:[6 4 9 2 7] 	 UUC:[1]
   > C2 - Op: 0.047 KKC:[1 6 7 0 5] 	 UUC:[9]
@@ -66,6 +71,7 @@ Then, for the loaded file, the `configure_division` function will generate confi
 The next step is determining the actual training and test set for the evaluation. The `get_train_test` method will be used for this from data modules. In the example code, the division was made for the first of the nine generated configurations and the first of the five folds.
 
 .. code-block:: python
+
   # Import DataLoader
   from torch.utils.data import DataLoader
 
@@ -82,6 +88,7 @@ The next step is determining the actual training and test set for the evaluation
 For the purpose of presentation, labels of objects located in the training and test data loaders were displayed. By default, labels are transformed using the one-hot encoder. In the test subset, the last label represents objects of an unknown class. The classes have been re-indexed in both subsets so that their labels are consecutive integers.
 
 .. code-block:: python
+
   import numpy as np
 
   # Load first batch of Train data and print unique labels
@@ -93,12 +100,14 @@ For the purpose of presentation, labels of objects located in the training and t
   print('Test labels:', np.unique(np.argmax(y, axis=1)))
 
 .. code-block:: shell
+
   > Train labels: [0 1 2 3 4]
   > Test labels: [0 1 2 3 4 5]
 
 The method of initializing the `TSoftmax` method is presented below. The simplest architecture available in the package (consisting only of fully connected layers) was used. The `depth` and `img_size_x` parameters describe the dimensions of the images in the MNIST set. The epsilon parameter was determined using a method available in the `Utils` module, which returns a suboptimal parameter value for a given KKC cardinality.
 
 .. code-block:: python
+
   # Initialize lower stack
   ls = torchosr.architectures.fc_lower_stack(depth=1, img_size_x=28, n_out_channels=64)
 
@@ -111,6 +120,7 @@ The method of initializing the `TSoftmax` method is presented below. The simples
 It is possible to further proceed with evaluation of the model for the given data. In the example, the number of epochs and the learning rate were defined, a table for the results from subsequent epochs was created, and the loss function and optimizer were defined. In a loop, for each epoch, the training and testing procedure was carried out. The values returned by the test method (Inner, Outer, Halfpoint and Overall scores, respectively) were saved to the table.
 
 .. code-block:: python
+
   import torch
 
   # Specify processing parameters
@@ -137,6 +147,7 @@ It is possible to further proceed with evaluation of the model for the given dat
 The results of the single processing can be visualized using `matplotlib` library. The output of code presented below is shown in Figure.
 
 .. code-block:: python
+
   import matplotlib.pyplot as plt
 
   # Present results
@@ -153,6 +164,7 @@ The results of the single processing can be visualized using `matplotlib` librar
 During the test procedure, one can also request a confusion matrix by using the `conf` flag in the test routine.
 
 .. code-block:: python
+
   # Call of test method with conf flag
   inner_score, outer_score, hp_score, overall_score, \
       inner_c, outer_c, hp_c, overall_c = method.test(test_data_loader, loss_fn, conf=True)
@@ -161,6 +173,7 @@ During the test procedure, one can also request a confusion matrix by using the 
   print(overall_c.detach().numpy())
 
 .. code-block:: shell
+  
   >  [[1244,    2,    1,    1,    3,   12],
       [   1, 1406,    6,    2,    1,   12],
       [   1,    2, 1240,    6,    3,   25],

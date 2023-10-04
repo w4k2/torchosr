@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""Toolbox for openset recognition problems data."""
+"""Toolbox for open set recognition."""
 from __future__ import absolute_import
 
 import codecs
