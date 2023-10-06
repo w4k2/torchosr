@@ -8,7 +8,7 @@ Installation
 
 To use the `torchosr` package, it will be absolutely useful to install it. Fortunately, it is available in the *PyPI* repository, so you may install it using `pip`:
 
-pip install -U torchosr
+pip install torchosr
 
 In case of necessity to expand it with functions that it does not yet include, it is also possible to install the module directly from the source code. If any modifications are introduced, they propagate to the module currently available to the environment.
 
