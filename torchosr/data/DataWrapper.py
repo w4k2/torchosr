@@ -89,7 +89,9 @@ class DataWrapper(VisionDataset):
             self.original_targets = list(compress(self.original_targets, is_known))
 
         #Get with specific indexes
-        if self.indexes != 'all':
+        if isinstance(self.indexes, str) and self.indexes == 'all':
+            pass
+        else:
             self.data = itemgetter(*indexes)(self.data)
             self.targets = itemgetter(*indexes)(self.targets)
             self.original_targets = itemgetter(*indexes)(self.original_targets)
