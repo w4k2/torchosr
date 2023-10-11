@@ -37,4 +37,4 @@ You can read more about it in the User Guide.
 
 To use the `torchosr` package, it will be absolutely useful to install it. Fortunately, it is available in the PyPI repository, so you may install it using `pip`::
 
-  pip install -U torchosr
+  pip install torchosr
