@@ -36,7 +36,6 @@ def get_data(known):
     
     return train_data, test_data
     
-
 def test_Openmax():
     # Define parameters
     learning_rate = 1e-3
