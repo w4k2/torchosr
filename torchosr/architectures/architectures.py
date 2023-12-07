@@ -10,7 +10,7 @@ def flat_empty_lower_stack():
     
     return nn.Sequential()
 
-def flat_fc_lower_stack(n_in_channels, n_out_channels):
+def flat_fc_lower_stack(n_in_channels, n_out_channels, n_layers=1):
     """
     Returns simple flat architecture with single Fully Connected layer and Relu activatation. 
 
@@ -27,6 +27,8 @@ def flat_fc_lower_stack(n_in_channels, n_out_channels):
     return nn.Sequential(
         nn.Linear(n_in_channels, n_out_channels),
         nn.ReLU(),
+        *([nn.Linear(n_out_channels, n_out_channels),
+        nn.ReLU()]*(n_layers-1)),
     )
     
 def fc_lower_stack(depth, img_size_x, n_out_channels):
