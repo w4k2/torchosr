@@ -1,4 +1,33 @@
 from torch import nn
+
+def flat_empty_lower_stack():
+    """
+    Returns empty flat architecture without any processing. 
+
+    :rtype: torch.nn.Sequential
+    :returns: Lower stack sequential architecture
+    """
+    
+    return nn.Sequential()
+
+def flat_fc_lower_stack(n_in_channels, n_out_channels):
+    """
+    Returns simple flat architecture with single Fully Connected layer and Relu activatation. 
+
+    :type n_in_channels: int
+    :param n_in_channels: Input size
+    
+    :type n_out_channels: int
+    :param n_out_channels: Output size
+
+    :rtype: torch.nn.Sequential
+    :returns: Lower stack sequential architecture
+    """
+    
+    return nn.Sequential(
+        nn.Linear(n_in_channels, n_out_channels),
+        nn.ReLU(),
+    )
     
 def fc_lower_stack(depth, img_size_x, n_out_channels):
     """

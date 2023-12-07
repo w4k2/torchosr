@@ -41,10 +41,10 @@ class DataWrapper(VisionDataset):
         self,
         root: str,
         base_dataset,
-        indexes, # For k-fold
         get_classes, # Known + Unknown
         known_classes,
         return_only_known, # For training
+        indexes = 'all', # For k-fold
         onehot = False,
         onehot_num_classes = None
     ) -> None:
@@ -60,7 +60,7 @@ class DataWrapper(VisionDataset):
         
         self.new_index_mask = None
         
-        #Get initial dataset
+        # Get initial dataset
         self.data, self.targets = [], []
         for i in range(len(self.base_dataset)):
             d, t = self.base_dataset.__getitem__(i)
@@ -68,27 +68,21 @@ class DataWrapper(VisionDataset):
                 continue
             self.data.append(d)
             self.targets.append(t)
-            
-        #Select known        
+
+        # Select known        
         self.targets = torch.tensor(self.targets)
         self.original_targets = copy.deepcopy(self.targets)
-
+        
         is_known = torch.any(torch.stack([torch.eq(self.targets, aelem).logical_or_(torch.eq(self.targets, aelem)) for aelem in self.known_classes], dim=0), dim = 0)
 
         # Reorder all the known classes
         for new_label, label in enumerate(np.sort(self.known_classes)):
             self.targets[self.targets==label] = new_label
-        
+            
         # Set all the unknown as the last class
         self.targets[~is_known] = len(self.known_classes)
 
-        # Remove unknown if return_only_known
-        if self.return_only_known:
-            self.data = list(compress(self.data, is_known))
-            self.targets = list(compress(self.targets, is_known))
-            self.original_targets = list(compress(self.original_targets, is_known))
-
-        #Get with specific indexes
+        # Get with specific indexes
         if isinstance(self.indexes, str) and self.indexes == 'all':
             pass
         else:
@@ -96,6 +90,12 @@ class DataWrapper(VisionDataset):
             self.targets = itemgetter(*indexes)(self.targets)
             self.original_targets = itemgetter(*indexes)(self.original_targets)
             
+        # Remove unknown if return_only_known
+        if self.return_only_known:
+            self.data = list(compress(self.data, is_known))
+            self.targets = list(compress(self.targets, is_known))
+            self.original_targets = list(compress(self.original_targets, is_known))
+        
     def reindex(self, new_index_mask):
         self.new_index_mask = new_index_mask
             
