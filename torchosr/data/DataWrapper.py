@@ -41,10 +41,10 @@ class DataWrapper(VisionDataset):
         self,
         root: str,
         base_dataset,
-        get_classes, # Known + Unknown
+        get_classes,        # Known + Unknown
         known_classes,
-        return_only_known, # For training
-        indexes = 'all', # For k-fold
+        return_only_known,  # For training
+        indexes = 'all',    # For k-fold
         onehot = False,
         onehot_num_classes = None
     ) -> None:
@@ -77,11 +77,11 @@ class DataWrapper(VisionDataset):
 
         # Reorder all the known classes
         for new_label, label in enumerate(np.sort(self.known_classes)):
-            self.targets[self.targets==label] = new_label
+            self.targets[self.targets == label] = new_label
             
         # Set all the unknown as the last class
         self.targets[~is_known] = len(self.known_classes)
-
+        
         # Get with specific indexes
         if isinstance(self.indexes, str) and self.indexes == 'all':
             pass
