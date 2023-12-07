@@ -12,3 +12,4 @@ pillow
 sphinxcontrib-bibtex
 igraph
 pandas
+scikit-learn
