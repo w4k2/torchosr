@@ -171,7 +171,7 @@ ax.plot(results.T, label=['Inner', 'Outer', 'Halfpoint', 'Overall'])
 ax.legend()
 ax.grid(ls=':')
 ax.set_xlabel('epochs')
-ax.set_ylabel('Weighted accurracy')
+ax.set_ylabel('Balanced accurracy')
 ax.set_xlim(0,epochs)
 ```
 

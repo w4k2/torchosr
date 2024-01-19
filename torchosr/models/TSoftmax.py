@@ -38,11 +38,12 @@ class TSoftmax(OSRModule):
         
         # Define metric for open set detection
         try:
-            inner_metric = Accuracy(task="multiclass", num_classes=self.n_known, average='weighted')
-            overall_metric = Accuracy(task="multiclass", num_classes=self.n_known+1, average='weighted')
+            inner_metric = Accuracy(task="multiclass", num_classes=self.n_known, average='macro')
+            overall_metric = Accuracy(task="multiclass", num_classes=self.n_known+1, average='macro')
         except:
             inner_metric = None
-        outer_metric = Accuracy(task='binary', average='weighted')
+            
+        outer_metric = Accuracy(task='multiclass', num_classes=2, average='macro')
 
         with torch.no_grad():
             for X, y in dataloader:

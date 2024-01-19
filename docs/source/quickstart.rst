@@ -156,7 +156,7 @@ The results of the single processing can be visualized using `matplotlib` librar
   ax.legend()
   ax.grid(ls=':')
   ax.set_xlabel('epochs')
-  ax.set_ylabel('Weighted accurracy')
+  ax.set_ylabel('Balanced accurracy')
   ax.set_xlim(0,epochs)
 
 .. image:: _static/example.png
