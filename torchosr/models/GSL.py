@@ -4,7 +4,7 @@ from torchmetrics import Accuracy, ConfusionMatrix
 from .base import OSRModule
 
 class GSL(OSRModule):
-    def __init__(self, lower_stack=None, n_known=3, sigma=3, n_generated=1.0, verbose=False, normal=False):
+    def __init__(self, lower_stack=None, n_known=3, sigma=3, n_generated=1.0, verbose=False, normal=False, threshold=None):
         super(GSL, self).__init__(lower_stack=lower_stack,
                                      n_known=n_known)
         self.sigma = sigma
@@ -12,6 +12,7 @@ class GSL(OSRModule):
         self.randy = None
         self.verbose = verbose
         self.normal = normal
+        self.threshold = threshold
         
         self.upper_stack = nn.Sequential(
             nn.Linear(64,32),
@@ -107,17 +108,24 @@ class GSL(OSRModule):
                 # # Establish inner preds and inner y
                 inner_pp = nn.Softmax(dim=1)(logits[:,:-1])
                 inner_pred = inner_pp.argmax(1)[known_mask]
-                inner_target = y_flat[known_mask]           
+                inner_target = y_flat[known_mask]
                 
                 inner_pp_overall = nn.Softmax(dim=1)(logits)
                 inner_pred_overall = inner_pp_overall.argmax(1)
 
-                inner_pred_harry_potter = inner_pred_overall[known_mask]
-                
                 # Establish outer pred
                 outer_pred = (logits.argmax(1) != self.n_known).int()
-                outer_target = (y_flat != self.n_known).int()
+
+                if self.threshold is not None:
+                    low_support_mask = inner_pp_overall.max(1)[0] < self.threshold
+                    
+                    inner_pred_overall[low_support_mask] = self.n_known                    
+                    outer_pred[low_support_mask] = 0
                 
+                inner_pred_harry_potter = inner_pred_overall[known_mask]
+
+                outer_target = (y_flat != self.n_known).int()
+ 
                 # Store predictions
                 inner_preds.append(inner_pred)
                 inner_preds_harry_potter.append(inner_pred_harry_potter)
