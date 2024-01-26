@@ -1,11 +1,14 @@
 import torch
 from torch import nn
 from torchmetrics import ConfusionMatrix, Accuracy
+import itertools
 from .base import OSRModule
+import numpy as np
+from numpy.matlib import repmat
 
-class NoiseSoftmax(OSRModule):
+class OverlaySoftmax(OSRModule):
     """
-    Implementation of NoiseSoftmax method
+    Implementation of OverlaySoftmax method
 
     :type lower_stack: nn.Sequential
     :param lower_stack: Network architecture of lower_stack
@@ -14,12 +17,20 @@ class NoiseSoftmax(OSRModule):
     :param n_known: Number of known classes
     
     """
-    def __init__(self, lower_stack=None, n_known=3, threshold=None, size=0.5):
-        super(NoiseSoftmax, self).__init__(lower_stack=lower_stack,
+    def __init__(self, 
+                 lower_stack=None, 
+                 n_known=3, 
+                 threshold=None, 
+                 size=0.5,
+                 shuffle=False,
+                 n_mixed=2):
+        super(OverlaySoftmax, self).__init__(lower_stack=lower_stack,
                                       n_known=n_known)
         self.randy = None
         self.size = size
         self.threshold = threshold
+        self.shuffle = shuffle
+        self.n_mixed = n_mixed
         
         self.upper_stack = nn.Sequential(
             nn.Linear(64, self.n_known+1)
@@ -27,16 +38,47 @@ class NoiseSoftmax(OSRModule):
         
     def train(self, dataloader, loss_fn, optimizer):
         for batch, (X, y) in enumerate(dataloader):
-            noise_X = torch.rand_like(X)[:int(self.size * X.shape[0])] * torch.max(X).item()
-            noise_y = torch.zeros((noise_X.shape[0], self.n_known+1))
-            noise_y[:,-1] = 1
+            # Establish number of target samples            
+            n_target_samples = int(X.shape[0] * self.size)
             
-            _X = torch.cat((X, noise_X))
-            _y = torch.cat((y, noise_y))
+            # Calculate known class distribution and list present classes
+            distribution = y.sum(0).detach().numpy().astype(int)
+            present = np.where(distribution != 0)[0]
+            
+            # Establish all combinations and enhance it to the target number of samples
+            pairing = np.array(list(itertools.combinations(present, self.n_mixed)))         
+            n_review = len(pairing)
+            n_cycles = np.ceil(n_target_samples / n_review).astype(int)
+            pairing = repmat(pairing, n_cycles, 1)[:n_target_samples]
+            
+            # Shuffle pairings if necessary
+            if self.shuffle:
+                np.random.shuffle(pairing)
+            
+            # Prepare storage
+            overlayed_X = []
+            
+            # Iterate pairing
+            for pid, elements in enumerate(pairing):
+                # Select sample sublocation
+                locs = pid % distribution[elements]
+                
+                # Establish sample location
+                ids = [np.where(y[:,element] == 1)[0][loc] for (element, loc) in zip(elements, locs)]
+                
+                # Integrate and store sample
+                x = X[ids].mean(0)                
+                overlayed_X.append(x)
+                
+            overlayed_X = torch.stack(overlayed_X)            
+            overlayed_y = torch.zeros((overlayed_X.shape[0], self.n_known+1))
+            overlayed_y[:,-1] = 1
+            
+            _X = torch.cat((X, overlayed_X))
+            _y = torch.cat((y, overlayed_y))
             
             # Compute prediction and loss
             pred = self(_X)
-            # print(pred.shape, _y.shape)
             loss = loss_fn(pred, _y)
             
             # Backpropagation
