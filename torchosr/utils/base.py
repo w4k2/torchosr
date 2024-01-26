@@ -23,5 +23,5 @@ def get_openmax_epsilon(n_known):
         
 def get_softmax_epsilon(n_known):
     """Optimized epsilon value for Thresholded Softmax and given number of KKC"""
-    return {9:.05, 8:.1, 7:.2, 6:.25, 
+    return {10: .04, 9:.05, 8:.1, 7:.2, 6:.25, 
             5:.35, 4:.48, 3:.6, 2:.8}[n_known]
