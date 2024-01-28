@@ -39,7 +39,7 @@ class OverlaySoftmax(OSRModule):
     def train(self, dataloader, loss_fn, optimizer):
         for batch, (X, y) in enumerate(dataloader):
             # Establish number of target samples            
-            n_target_samples = int(X.shape[0] * self.size)
+            n_target_samples = int(np.ceil(X.shape[0] * self.size))
             
             # Calculate known class distribution and list present classes
             distribution = y.sum(0).detach().numpy().astype(int)
