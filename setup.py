@@ -25,8 +25,8 @@ MAINTAINER_EMAIL = "joanna.komorniczak@pwr.edu.pl"
 URL = "https://github.com/w4k2/torchosr"
 LICENSE = "GPL-3.0"
 DOWNLOAD_URL = "https://github.com/w4k2/torchosr"
-VERSION = "0.1.5"
-INSTALL_REQUIRES = ["numpy", "scipy", "torch", "torchvision", "torchmetrics"]
+VERSION = "0.1.6"
+INSTALL_REQUIRES = ["numpy", "scipy", "torch", "torchvision", "torchmetrics", "scikit-learn"]
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
